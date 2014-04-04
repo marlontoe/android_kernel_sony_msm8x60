@@ -2031,8 +2031,6 @@ static int msm_fb_pan_display_sub(struct fb_var_screeninfo *var,
 	struct mdp_dirty_region dirty;
 	struct mdp_dirty_region *dirtyPtr = NULL;
 	struct msm_fb_data_type *mfd = (struct msm_fb_data_type *)info->par;
-	struct msm_fb_panel_data *pdata =
-		(struct msm_fb_panel_data *)mfd->pdev->dev.platform_data;
 
 	/*
 	 * If framebuffer is 2, io pen display is not allowed.
@@ -2122,11 +2120,6 @@ static int msm_fb_pan_display_sub(struct fb_var_screeninfo *var,
 	mdp_dma_pan_update(info);
 	msm_fb_signal_timeline(mfd);
 	up(&msm_fb_pan_sem);
-
-	if (pdata->power_on_panel_at_pan) {
-		pdata->controller_on_panel_on(mfd->pdev);
-		pdata->power_on_panel_at_pan = 0;
-	}
 
 	if (unset_bl_level && !bl_updated)
 		schedule_delayed_work(&mfd->backlight_worker,
